@@ -1,0 +1,32 @@
+db.products.insertMany([
+  { name: "Samsung TV", category: "electronics", price: 1500, stock: 5, brand: "Samsung" },
+  { name: "iPhone 13", category: "electronics", price: 900, stock: 15, brand: "Apple" },
+  { name: "Wooden Table", category: "furniture", price: 150, stock: 8, brand: "IKEA" },
+  { name: "Office Chair", category: "furniture", price: 200, stock: 12, brand: "Steelcase" },
+  { name: "Apple MacBook Pro", category: "electronics", price: 2000, stock: 4, brand: "Apple" },
+  { name: "LG Refrigerator", category: "electronics", price: 1200, stock: 7, brand: "LG" },
+  { name: "Banana", category: "food", price: 2, stock: 100, brand: "Chiquita" },
+  { name: "T-Shirt", category: "clothing", price: 20, stock: 50, brand: "Nike" },
+  { name: "Sony Headphones", category: "electronics", price: 300, stock: 20, brand: "Sony" },
+  { name: "Sofa", category: "furniture", price: 800, stock: 3, brand: "Ashley" }
+])
+
+db.products.find({ price: { $gt: 500 } })
+db.products.find({ stock: { $lt: 10 } })
+db.products.find({ category: { $ne: "electronics" } })
+db.products.find({
+  $or: [
+    { category: "electronics" },
+    { category: "furniture" }
+  ]
+})
+db.products.find({
+  category: "electronics",
+  price: { $gt: 1000 }
+})
+db.products.find({
+  category: { $nin: ["food", "clothing"] }
+})
+db.products.find({ name: { $regex: "^S" } })
+db.products.find().skip(5).limit(10)
+db.products.find({ discount: { $exists: true } })

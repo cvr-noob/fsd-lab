@@ -1,0 +1,525 @@
+
+
+FSD LAB QUETSIONS FOR INTERNAL AND EXTERNAL
+
+    1. Create a git repository local add and commit a simple web application consisting of 5 pages. Create a remote repository in github.com. Push the above local repository to the github.com. Explore the push, pull and fetch options with remote repository.
+
+Create a folder:
+my-web-app
+index.html 
+<h1>Home Page</h1>
+<a href="about.html">About</a>
+<a href="contact.html">Contact</a>
+<a href="services.html">Services</a>
+<a href="login.html">Login</a>
+about.html //similarly contact,services,login etc
+<h1>About Page</h1>
+<a href="index.html">Home</a>
+Open terminal cd my-web-app
+git init//creates local rep
+git add .//adds staging files
+git commit -m "Initial commit with 5-page web app"
+->Go to github create new repo name : my-web-app
+//copy url and run the cmnd
+git remote add origin https://github.com/your-username/my-web-app.git
+//check connection 
+git remote -v
+git branch -M main
+git push -u origin main
+//exploring git commands
+git add .
+git commit -m "Updated home page"
+git push //sends changes
+git pull origin main//gets latest changes from github and merges
+git fetch origin //downloads the changes but doesnot merge
+git merge origin/main //merge manually
+
+    2. Clone a remote repository into local directory, modify the implementation and push the updated changes back to remote repository. Create branch and manage the work distributions. Merge all the branches and commit the changes. Publish the application using GitHub pages.
+
+Go to your repo on GitHub and copy the URL.
+git clone https://github.com/your-username/my-web-app.git
+cd my-web-app
+Update index.html
+git add .
+git commit -m "Updated home page"
+git push origin main //changes updated on github
+//new branch
+git branch feature1
+git checkout feature1
+Modify about.html // Make Changes in Branch
+git add .
+git commit -m "Updated about page in feature1"
+git push origin feature1 //push branch to remote
+git checkout main //switch to main
+git merge feature1 //merge with feature1
+git push origin main //push merged code
+for work distribution create more branches
+Publish Using GitHub Pages
+Goto your repo on github
+    1. Click Settings 
+    2. Go to Pages 
+    3. Under Branch, select: 
+        ◦ main 
+        ◦ / (root) 
+    4. Click Save 
+👉 You’ll get a live link like:
+https://your-username.github.io/my-web-app/
+
+    3. Perform the following operation on java script Symbols
+
+            i. Create a program to demonstrate how Symbols can be used to generate unique IDs for properties in an object to avoid property name conflicts.
+// Create symbols
+const id1 = Symbol("id");
+const id2 = Symbol("id"); // same description but different symbol
+
+let user = {
+    name: "John",
+    [id1]: 101,
+    [id2]: 202
+};
+
+console.log(user[id1]); // 101
+console.log(user[id2]); // 202
+
+console.log(id1 === id2); // false (unique)
+
+            ii. Write a program where you use Symbols as keys in an object. Demonstrate adding, retrieving, and checking if a Symbol exists as a key.
+const symKey = Symbol("userID");
+
+let obj = {};
+
+// Add value
+obj[symKey] = 5001;
+
+// Retrieve value
+console.log(obj[symKey]); // 5001
+
+// Check existence
+console.log(symKey in obj); // true
+
+// Try normal access (won't work)
+console.log(obj.userID); // undefined
+            iii. Create a program that uses Symbols to add metadata to an object while avoiding property name conflicts.
+const metaData = Symbol("metadata");
+
+let product = {
+    name: "Laptop",
+    price: 50000
+};
+// Add hidden metadata
+product[metaData] = {
+    createdBy: "Admin",
+    createdAt: "2026-03-31"
+};
+console.log(product);
+
+// Access metadata
+console.log(product[metaData]);
+// Metadata won't appear in normal loops
+for (let key in product) {
+    console.log(key); // only name, price
+}
+            iv.  Write a program that uses Symbol.iterator to create a custom iterable object.
+let myCollection = {
+    items: [10, 20, 30],
+
+    [Symbol.iterator]: function () {
+        let index = 0;
+        let data = this.items;
+
+        return {
+            next: function () {
+                if (index < data.length) {
+                    return { value: data[index++], done: false };
+                } else {
+                    return { done: true };
+                }
+            }
+        };
+    }
+};
+
+// Using for...of loop
+for (let value of myCollection) {
+    console.log(value);
+}
+
+
+
+    4. Student Management System CRUD API Question: Create an Express.js application to manage student records in a school database: POST /students: Add a new student record (name, age, class, grade). GET /students: Retrieve all student records. GET /students/:id: Retrieve a student record by id. PUT /students/:id: Update a student's record by id. DELETE /students/:id: Delete a student record by id. (Use Postman)
+npm init -y
+npm install express
+
+const express = require("express");
+const app = express();
+
+app.use(express.json());
+
+let students = [];
+let id = 1;
+
+// CREATE
+app.post("/students", (req, res) => {
+    const student = { id: id++, ...req.body };
+    students.push(student);
+    res.send(student);
+});
+
+// READ ALL
+app.get("/students", (req, res) => {
+    res.send(students);
+});
+
+// READ ONE
+app.get("/students/:id", (req, res) => {
+    const student = students.find(s => s.id == req.params.id);
+    res.send(student || "Student not found");
+});
+
+// UPDATE
+app.put("/students/:id", (req, res) => {
+    const student = students.find(s => s.id == req.params.id);
+    if (student) {
+        Object.assign(student, req.body);
+        res.send(student);
+    } else {
+        res.send("Student not found");
+    }
+});
+
+// DELETE
+app.delete("/students/:id", (req, res) => {
+    students = students.filter(s => s.id != req.params.id);
+    res.send("Deleted");
+});
+
+app.listen(3000, () => console.log("Server running"));
+
+
+    5.  Write a JavaScript console program to implement async/await using promises.
+Constraints:
+        1. Create a function named findAbsolute(n) which accepts a value and returns the promise.
+        2. Function findAbsolute(n) will check whether n is an absolute value or not.
+        3. If ‘n’ is an absolute value, then resolve the promise with message ‘Absolute value!!’, else reject the promise with message ‘Invalid’.
+        4. Create an async function named findResult(n) which gets ‘n as an input from the file and passes it to the method findAbsolute().
+        5. Use the keyword await inside async function to wait until that promise settles and returns its result.
+        6. Display the message inside async function.
+// Function that returns a Promise
+function findAbsolute(n) {
+    return new Promise((resolve, reject) => {
+        if (n >= 0) {
+            resolve("Absolute value!!");
+        } else {
+            reject("Invalid");
+        }
+    });
+}
+
+// Async function
+async function findResult(n) {
+    try {
+        const result = await findAbsolute(n); // wait for promise
+        console.log(result);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// Input (you can change value)
+findResult(10);   // Absolute value!!
+findResult(-5);   // Invalid
+
+
+    6. Write the Programs to demonstrate Node JS Modules
+    a.  Modify the previous HTTP server to handle two routes:should respond with "Welcome to the homepage".about should respond with "This is the about page".Use conditional statements to check the requested URL and send theappropriate response.
+
+// server.js
+const http = require("http");
+
+const server = http.createServer((req, res) => {
+
+    if (req.url === "/") {
+        res.write("Welcome to the homepage");
+    } 
+    else if (req.url === "/about") {
+        res.write("This is the about page");
+    } 
+    else {
+        res.write("404 Page Not Found");
+    }
+
+    res.end();
+});
+
+server.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+    b. Extend the HTTP server to respond with a JSON object when arequest is made to /api/data. The server should send a JSON object with name,age, and city properties. Make sure the correct Content-Type header is setto application/json
+const http = require("http");
+
+const server = http.createServer((req, res) => {
+
+    if (req.url === "/") {
+        res.write("Welcome to the homepage");
+    } 
+    else if (req.url === "/about") {
+        res.write("This is the about page");
+    } 
+    else if (req.url === "/api/data") {
+
+        const data = {
+            name: "Ram",
+            age: 35,
+            city: "Hyderabad"
+        };
+
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.write(JSON.stringify(data));
+    } 
+    else {
+        res.write("404 Page Not Found");
+    }
+
+    res.end();
+});
+
+server.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+    c. Write a Node.js script using the os module to display thefollowing system information: The hostname of the machine. The platform ofthe system (e.g., Linux, Darwin, Windows). The system's uptime (in seconds).The total memory available (in MB) and free memory (in MB).
+// osInfo.js
+const os = require("os");
+
+console.log("Hostname:", os.hostname());
+console.log("Platform:", os.platform());
+console.log("Uptime (seconds):", os.uptime());
+
+// Convert bytes to MB
+const totalMem = os.totalmem() / (1024 * 1024);
+const freeMem = os.freemem() / (1024 * 1024);
+
+console.log("Total Memory (MB):", totalMem.toFixed(2));
+console.log("Free Memory (MB):", freeMem.toFixed(2));
+
+    7. CRUD Operations for a Movie Database Question: Build an Express.js application to manage a movie database with the following endpoints: POST /movies: Add a new movie (title, director, release year, genre). GET /movies: Retrieve all movies in the database. GET /movies/:id: Retrieve a movie by its id. PUT /movies/:id: Update the details of a movie by its id. DELETE /movies/:id: Remove a movie from the database by its id (Use MongoDB)
+
+const express = require("express");
+const { MongoClient, ObjectId } = require("mongodb");
+
+const app = express();
+app.use(express.json());
+
+const url = "mongodb://127.0.0.1:27017";
+const client = new MongoClient(url);
+
+let db;
+// Connect DB
+async function connectDB() {
+    await client.connect();
+    db = client.db("moviesDB");
+    console.log("MongoDB Connected");
+}
+connectDB();
+app.post("/movies", async (req, res) => {
+    const result = await db.collection("movies").insertOne(req.body);
+    res.send(result);
+});
+app.get("/movies", async (req, res) => {
+    const movies = await db.collection("movies").find().toArray();
+    res.send(movies);
+});
+app.get("/movies/:id", async (req, res) => {
+    const movie = await db.collection("movies").findOne({
+        _id: new ObjectId(req.params.id)
+    });
+    res.send(movie);
+});
+app.put("/movies/:id", async (req, res) => {
+    const result = await db.collection("movies").updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: req.body }
+    );
+    res.send(result);
+});
+app.delete("/movies/:id", async (req, res) => {
+    const result = await db.collection("movies").deleteOne({
+        _id: new ObjectId(req.params.id)
+    });
+    res.send(result);
+});
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
+});
+    8. a MongoDB query to create a products collection in the CSE database with the fields: name, category, price, stock, and brand. Insert atleast 10 documents in products collections. Perform following operationsFind products priced above 500:
+    a. Find products with stock less than 10:
+    b. Find products with price between 100 and 500:
+    c. Find products not in category "electronics":
+    d. Find products in "electronics" or "furniture" categories:
+    e. Find products that are "electronics" and cost more than 1000:
+    f. Find products that are neither "food" nor "clothing":
+    g. Find products with names starting with "S":
+    h. Skip first 5 products and show next 10:
+    i. Find products with a discount field:
+
+db.products.insertMany([
+{ name: "Samsung TV", category: "electronics", price: 1500, stock: 5, brand: "Samsung" },
+……
+])
+->db.products.find({ price: { $gt: 500 } })
+->db.products.find({ stock: { $lt: 10 } })
+->db.products.find({ category: { $ne: "electronics" } })
+->db.products.find({
+  $or: [
+    { category: "electronics" },
+    { category: "furniture" }
+  ]
+})
+->db.products.find({
+  category: "electronics",
+  price: { $gt: 1000 }
+})
+->db.products.find({
+  category: { $nin: ["food", "clothing"] }
+})
+->db.products.find({ name: { $regex: "^S" } })
+->db.products.find().skip(5).limit(10)
+->db.products.find({ discount: { $exists: true } })
+    9.  Weather App
+    • Description: A weather app that fetches real-time weather data based on user input.
+    • Features:
+        ◦ Users enter a city name, and the app fetches weather data via an API.
+        ◦ Displays temperature, humidity, and weather conditions dynamically.
+    • EJS Usage:
+        ◦ home.ejs for input form.
+        ◦ weather.ejs to show dynamic weather results.
+weather-app/
+│── views/
+│ ├── home.ejs
+│ └── weather.ejs
+│── server.js
+│── package.json
+npm init -y
+npm install express axios ejs
+//server.js
+const express = require("express");
+const axios = require("axios");
+const app = express();
+app.set("view engine", "ejs");
+app.use(express.urlencoded({ extended: true }));
+const API_KEY = "YOUR_API_KEY";
+app.get("/", (req, res) => {
+    res.render("home");
+});
+app.post("/weather", async (req, res) => {
+    const city = req.body.city;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+    const r = await axios.get(url);
+
+    res.render("weather", {
+        city: r.data.name,
+        temp: r.data.main.temp,
+        humidity: r.data.main.humidity,
+        condition: r.data.weather[0].description
+    });
+});
+app.listen(3000);
+	//home.ejs
+	<form action="/weather" method="POST">
+    		<input name="city" placeholder="Enter city">
+   	<button>Submit</button>
+</form>
+//weather.ejs
+<h2><%= city %></h2>
+<p>Temp: <%= temp %></p>
+<p>Humidity: <%= humidity %></p>
+<p>Condition: <%= condition %></p>
+<a href="/">Back</a>
+    10. REACT: Build a fully functional task management dashboard using React where multiple users can:
+    • Create, update, delete tasks 
+    • Drag and drop tasks across different statuses (To Do, In Progress, Done) 
+    • Assign tasks to users 
+    • Filter and search tasks dynamically 
+    • Persist data using an API
+npx create-react-app task-app
+cd task-app
+npm install axios @hello-pangea/dnd
+npm install -g json-server
+
+      //db.json (task-app\db.json)
+      {
+           "tasks": []
+       }
+//src/app.js
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+const API = "http://localhost:3001/tasks";
+
+function App() {
+  const [tasks, setTasks] = useState([]);
+  const [text, setText] = useState("");
+  const [user, setUser] = useState("");
+  useEffect(() => {
+    axios.get(API).then(res => setTasks(res.data));
+  }, []);
+  // ADD TASK
+  const addTask = async () => {
+    const newTask = { text, user, status: "todo" };
+    const res = await axios.post(API, newTask);
+    setTasks([...tasks, res.data]);
+    setText(""); setUser("");
+  };
+  // DELETE
+  const deleteTask = async (id) => {
+    await axios.delete(`${API}/${id}`);
+    setTasks(tasks.filter(t => t.id !== id));
+  };
+  // DRAG
+  const onDragEnd = async (result) => {
+    if (!result.destination) return;
+    const updated = [...tasks];
+    const task = updated.find(t => t.id == result.draggableId);
+    task.status = result.destination.droppableId;
+    setTasks(updated);
+
+    await axios.put(`${API}/${task.id}`, task);
+  };
+  return (
+    <div>
+      <h2>Task Dashboard</h2>
+      <input placeholder="Task" value={text} onChange={e => setText(e.target.value)} />
+      <input placeholder="User" value={user} onChange={e => setUser(e.target.value)} />
+      <button onClick={addTask}>Add</button>
+
+      <DragDropContext onDragEnd={onDragEnd}>
+        {["todo", "inprogress", "done"].map(status => (
+          <Droppable droppableId={status} key={status}>
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                <h3>{status}</h3>
+                {tasks
+                  .filter(t => t.status === status)
+                  .map((t, i) => (
+                    <Draggable key={t.id} draggableId={t.id.toString()} index={i}>
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <p>{t.text} - {t.user}</p>
+                          <button onClick={() => deleteTask(t.id)}>Delete</button>
+                        </div>)}
+                    </Draggable>
+                  ))}
+                {provided.placeholder}
+              </div> )}
+          </Droppable>))}
+      </DragDropContext>
+    </div>);}
+export default App;
+
+//run api
+json-server --watch db.json --port 3001
+//run react app
+npm start
