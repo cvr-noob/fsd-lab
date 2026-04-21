@@ -2,7 +2,7 @@
 
 Directives are classes that add additional behavior to elements in your Angular applications.
 
-Types: \
+Types:
 1. **Components** - Basic building block of the UI: \
    Structure:
    - Template (HTML) → what you see
